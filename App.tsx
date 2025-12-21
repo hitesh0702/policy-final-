@@ -6,6 +6,7 @@ import Footer from './components/Footer';
 import HomePage from './components/HomePage';
 import LoadingPage from './components/LoadingPage';
 import ReportPage from './components/ReportPage';
+import Privacy from './pages/Privacy';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
       <main className="flex-grow container mx-auto px-4 pt-28 pb-12">
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/privacy" element={<Privacy />} />
           <Route path="/loading" element={<LoadingPage />} />
           <Route path="/report" element={<ReportPage />} />
         </Routes>
