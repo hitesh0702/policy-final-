@@ -1,55 +1,46 @@
-import React from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
-const Header: React.FC = () => {
-  const handleLogin = async () => {
-    const email = window.prompt("Enter your email");
-    if (!email) return;
+const Header = () => {
+  const [user, setUser] = useState<any>(null);
 
-    const { error } = await supabase.auth.signInWithOtp({ email });
-    if (error) alert(error.message);
-    else alert("Check your email for login link");
-  };
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => listener.subscription.unsubscribe();
+  }, []);
 
   return (
-    <header
-      style={{
-        position: "fixed",
-        top: 20,
-        left: 0,
-        right: 0,
-        display: "flex",
-        justifyContent: "center",
-        zIndex: 100,
-      }}
-    >
-      <div
-        style={{
-          background: "white",
-          padding: "12px 20px",
-          borderRadius: 999,
-          boxShadow: "0 10px 30px rgba(0,0,0,0.08)",
-          display: "flex",
-          alignItems: "center",
-          gap: 16,
-        }}
-      >
-        <strong>PolicyPulse</strong>
+    <header style={{ padding: 16 }}>
+      <strong>PolicyPulse</strong>
 
+      {user ? (
         <button
-          onClick={handleLogin}
-          style={{
-            background: "black",
-            color: "white",
-            border: "none",
-            padding: "6px 14px",
-            borderRadius: 999,
-            cursor: "pointer",
-          }}
+          onClick={() => supabase.auth.signOut()}
+          style={{ marginLeft: 16 }}
+        >
+          Sign Out
+        </button>
+      ) : (
+        <button
+          onClick={() =>
+            supabase.auth.signInWithOtp({
+              email: prompt("Enter email")!,
+            })
+          }
+          style={{ marginLeft: 16 }}
         >
           Sign In
         </button>
-      </div>
+      )}
     </header>
   );
 };
