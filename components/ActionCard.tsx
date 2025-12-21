@@ -1,4 +1,3 @@
-
 import React from 'react';
 import ShieldCheckIcon from './icons/ShieldCheckIcon';
 
@@ -9,13 +8,21 @@ interface ActionCardProps {
 
 const ActionCard: React.FC<ActionCardProps> = ({ title, description }) => {
   return (
-    <div className="bg-white p-8 rounded-4xl border border-neutral-100 shadow-sm flex flex-col gap-6 hover:shadow-lg transition-all">
-      <div className="bg-neutral-900 w-12 h-12 rounded-2xl flex items-center justify-center shadow-lg shadow-neutral-200">
-        <ShieldCheckIcon className="w-6 h-6 text-white" />
+    <div className="bg-white border border-neutral-200 rounded-2xl p-4 flex gap-3 hover:border-neutral-400 transition">
+      
+      {/* Icon */}
+      <div className="bg-neutral-900 w-8 h-8 rounded-xl flex items-center justify-center shrink-0">
+        <ShieldCheckIcon className="w-4 h-4 text-white" />
       </div>
+
+      {/* Content */}
       <div>
-        <h4 className="font-black text-xl text-neutral-900 mb-3 tracking-tight">{title}</h4>
-        <p className="text-neutral-600 leading-relaxed font-semibold">{description}</p>
+        <h4 className="text-sm font-semibold text-neutral-900 leading-tight">
+          {title}
+        </h4>
+        <p className="text-sm text-neutral-600 mt-1 leading-snug">
+          {description}
+        </p>
       </div>
     </div>
   );
