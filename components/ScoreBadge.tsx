@@ -1,4 +1,3 @@
-
 import React from 'react';
 
 interface ScoreBadgeProps {
@@ -6,45 +5,48 @@ interface ScoreBadgeProps {
 }
 
 const ScoreBadge: React.FC<ScoreBadgeProps> = ({ score }) => {
-  const getScoreColor = (s: number) => {
-    if (s >= 75) return 'text-neutral-900'; // Pure neutral
-    if (s >= 40) return 'text-neutral-600';
-    return 'text-neutral-400';
-  };
-
-  const circumference = 2 * Math.PI * 45;
+  const circumference = 2 * Math.PI * 36; // smaller radius
   const offset = circumference - (score / 100) * circumference;
 
   return (
-    <div className="flex flex-col items-center justify-center relative w-44 h-44">
-      <svg className="w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+    <div className="relative w-24 h-24 flex items-center justify-center">
+      <svg
+        className="w-full h-full transform -rotate-90"
+        viewBox="0 0 100 100"
+      >
         <circle
-          className="text-neutral-100"
-          strokeWidth="4"
           stroke="currentColor"
+          className="text-neutral-200"
+          strokeWidth="6"
           fill="transparent"
-          r="45"
+          r="36"
           cx="50"
           cy="50"
         />
         <circle
+          stroke="currentColor"
           className="text-neutral-900"
-          strokeWidth="4"
+          strokeWidth="6"
           strokeDasharray={circumference}
           strokeDashoffset={offset}
           strokeLinecap="round"
-          stroke="currentColor"
           fill="transparent"
-          r="45"
+          r="36"
           cx="50"
           cy="50"
-          style={{ transition: 'stroke-dashoffset 2s cubic-bezier(0.65, 0, 0.35, 1)' }}
+          style={{
+            transition: 'stroke-dashoffset 1.2s ease-out',
+          }}
         />
       </svg>
-      
+
       <div className="absolute inset-0 flex flex-col items-center justify-center">
-        <span className="text-[10px] font-black text-neutral-300 uppercase tracking-[0.3em] mb-1">Safety Score</span>
-        <span className="text-6xl font-extrabold text-neutral-900 tracking-tighter">{score}</span>
+        <span className="text-[9px] text-neutral-400 uppercase tracking-wide">
+          Score
+        </span>
+        <span className="text-2xl font-semibold text-neutral-900 leading-none">
+          {score}
+        </span>
       </div>
     </div>
   );
