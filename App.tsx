@@ -16,7 +16,7 @@ const App: React.FC = () => {
       }}
     >
       <Header />
-      <main style={{ paddingTop: 120, paddingBottom: 40 }}>
+      <main style={{ paddingTop: 80 }}>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/loading" element={<LoadingPage />} />
