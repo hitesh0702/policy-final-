@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { Report } from '../types';
@@ -20,8 +19,8 @@ const ReportPage: React.FC = () => {
     setIsGeneratingPdf(true);
     try {
       await generateReportPdf(report);
-    } catch (error) {
-      alert("Export failed.");
+    } catch {
+      alert('Export failed.');
     } finally {
       setIsGeneratingPdf(false);
     }
@@ -29,90 +28,126 @@ const ReportPage: React.FC = () => {
 
   if (!report) {
     return (
-      <div className="text-center py-40 px-6">
-        <h2 className="text-5xl font-black text-neutral-900 tracking-tighter">SESSION EXPIRED.</h2>
-        <Link to="/" className="mt-12 inline-block bg-neutral-900 text-white px-12 py-5 rounded-full font-black uppercase tracking-widest shadow-2xl shadow-neutral-200 hover:scale-105 transition-all">
-          New Analysis
+      <div className="text-center py-32 px-6">
+        <h2 className="text-3xl font-bold text-neutral-900">
+          Session expired
+        </h2>
+        <Link
+          to="/"
+          className="mt-8 inline-block bg-neutral-900 text-white px-8 py-4 rounded-full text-sm font-semibold"
+        >
+          New analysis
         </Link>
       </div>
     );
   }
 
   const { contact_info } = report;
-  const hasContactInfo = contact_info && (contact_info.support_email || contact_info.cancellation_link);
+  const hasContactInfo =
+    contact_info &&
+    (contact_info.support_email || contact_info.cancellation_link);
 
   return (
-    <div className="max-w-4xl mx-auto pb-24 space-y-16">
-      {/* HUD Panel - Increased opacity for readability */}
-      <div className="glass-card p-10 md:p-20 rounded-5xl border border-neutral-100 bg-white/80">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-16 border-b border-neutral-100 pb-16">
-          <div className="flex-1 text-center md:text-left">
-            <span className="text-[11px] font-black text-neutral-500 uppercase tracking-[0.4em] mb-4 block">Security Audit Complete</span>
-            <h1 className="text-5xl md:text-6xl font-black text-neutral-900 tracking-tighter leading-tight mb-6">
+    <div className="max-w-3xl mx-auto px-4 pb-20 space-y-12">
+
+      {/* Header */}
+      <div className="bg-white border border-neutral-200 rounded-3xl p-6">
+        <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-neutral-100 pb-6">
+          <div>
+            <p className="text-xs text-neutral-500 mb-1">
+              Audit completed
+            </p>
+            <h1 className="text-2xl font-semibold text-neutral-900 truncate max-w-xl">
               {report.source.value}
             </h1>
-            <p className="text-neutral-400 font-black text-xs uppercase tracking-widest">
-              Generated {new Date(report.created_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
+            <p className="text-xs text-neutral-400 mt-1">
+              {new Date(report.created_at).toLocaleDateString()}
             </p>
           </div>
           <ScoreBadge score={report.score} />
         </div>
 
-        {/* TL;DR Section */}
-        <div className="py-20">
-          <h2 className="text-[11px] font-black text-neutral-400 uppercase tracking-[0.4em] mb-10">Executive Summary</h2>
-          <div className="bg-white p-10 rounded-4xl border border-neutral-200 shadow-sm">
-            <p className="text-3xl font-black text-neutral-900 leading-[1.2] tracking-tight">
+        {/* TLDR */}
+        <div className="mt-6">
+          <h2 className="text-xs font-semibold text-neutral-500 uppercase mb-2">
+            Summary
+          </h2>
+          <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-4">
+            <p className="text-base font-medium text-neutral-900 leading-relaxed">
               {report.tldr}
             </p>
-            <p className="mt-10 text-xs text-neutral-500 font-black uppercase tracking-widest border-t border-neutral-100 pt-8">
-              AI Rationale: <span className="font-semibold normal-case italic text-neutral-600">{report.score_rationale}</span>
+            <p className="mt-3 text-xs text-neutral-500">
+              <span className="font-semibold">Why:</span>{' '}
+              {report.score_rationale}
             </p>
           </div>
         </div>
 
-        {/* Risks Section */}
-        <div className="py-20 border-t border-neutral-100">
-           <h2 className="text-[11px] font-black text-neutral-400 uppercase tracking-[0.4em] mb-12">Findings</h2>
+        {/* Risks */}
+        <div className="mt-8 border-t border-neutral-100 pt-6">
+          <h2 className="text-xs font-semibold text-neutral-500 uppercase mb-4">
+            Findings
+          </h2>
+
           {report.risks.length > 0 ? (
-            <div className="grid grid-cols-1 gap-10">
+            <div className="space-y-4">
               {report.risks.map((risk) => (
                 <RiskCard key={risk.risk_id} risk={risk} />
               ))}
             </div>
           ) : (
-             <div className="text-center py-24 bg-neutral-50 rounded-5xl border border-neutral-200">
-              <p className="font-black text-neutral-900 text-2xl tracking-tighter">NO CONCERNS FOUND</p>
-              <p className="text-neutral-600 mt-2 font-semibold tracking-tight">This policy is within standard user-friendly guidelines.</p>
+            <div className="bg-neutral-50 border border-neutral-200 rounded-2xl p-6 text-center">
+              <p className="font-semibold text-neutral-900">
+                No major concerns found
+              </p>
+              <p className="text-sm text-neutral-600 mt-1">
+                This policy appears user-friendly.
+              </p>
             </div>
           )}
         </div>
 
-         {/* Actions Section */}
-        <div className="py-20 border-t border-neutral-100">
-           <h2 className="text-[11px] font-black text-neutral-400 uppercase tracking-[0.4em] mb-12">Recommendations</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {/* Actions */}
+        <div className="mt-8 border-t border-neutral-100 pt-6">
+          <h2 className="text-xs font-semibold text-neutral-500 uppercase mb-4">
+            Recommendations
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {report.actions.map((action, index) => (
-              <ActionCard key={index} title={action.title} description={action.description} />
+              <ActionCard
+                key={index}
+                title={action.title}
+                description={action.description}
+              />
             ))}
           </div>
         </div>
 
-        {/* Contact HUD */}
+        {/* Contact */}
         {hasContactInfo && (
-          <div className="py-20 border-t border-neutral-100">
-            <h2 className="text-[11px] font-black text-neutral-400 uppercase tracking-[0.4em] mb-12">Support & Ops</h2>
-            <div className="flex flex-wrap gap-4">
+          <div className="mt-8 border-t border-neutral-100 pt-6">
+            <h2 className="text-xs font-semibold text-neutral-500 uppercase mb-4">
+              Support
+            </h2>
+            <div className="flex flex-wrap gap-3">
               {contact_info.support_email && (
-                <a href={`mailto:${contact_info.support_email}`} className="flex items-center gap-5 bg-white border border-neutral-200 px-10 py-6 rounded-3xl hover:border-neutral-900 transition-all shadow-md group">
-                  <MailIcon className="w-6 h-6 text-neutral-400 group-hover:text-neutral-900 transition-colors" />
-                  <span className="text-base font-black text-neutral-900">{contact_info.support_email}</span>
+                <a
+                  href={`mailto:${contact_info.support_email}`}
+                  className="flex items-center gap-2 border border-neutral-200 px-4 py-2 rounded-xl text-sm hover:border-neutral-400"
+                >
+                  <MailIcon className="w-4 h-4" />
+                  {contact_info.support_email}
                 </a>
               )}
               {contact_info.cancellation_link && (
-                <a href={contact_info.cancellation_link} target="_blank" rel="noopener noreferrer" className="flex items-center gap-5 bg-white border border-neutral-200 px-10 py-6 rounded-3xl hover:border-neutral-900 transition-all shadow-md group">
-                  <LinkIcon className="w-6 h-6 text-neutral-400 group-hover:text-neutral-900 transition-colors" />
-                  <span className="text-base font-black text-neutral-900 uppercase tracking-tighter">Account Dashboard</span>
+                <a
+                  href={contact_info.cancellation_link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 border border-neutral-200 px-4 py-2 rounded-xl text-sm hover:border-neutral-400"
+                >
+                  <LinkIcon className="w-4 h-4" />
+                  Account page
                 </a>
               )}
             </div>
@@ -120,19 +155,24 @@ const ReportPage: React.FC = () => {
         )}
       </div>
 
-      <div className="flex flex-col sm:flex-row justify-center items-center gap-8 py-10">
-          <button 
-            onClick={handleDownloadPdf}
-            disabled={isGeneratingPdf}
-            className="w-full sm:w-auto px-12 py-6 bg-white text-neutral-900 font-black rounded-full hover:bg-neutral-50 transition-all shadow-md border border-neutral-200 flex items-center justify-center gap-3 uppercase tracking-widest text-xs"
-          >
-            <DownloadIcon className="w-5 h-5" />
-            {isGeneratingPdf ? 'EXPORTING...' : 'SAVE PDF'}
-          </button>
-          <Link to="/" className="w-full sm:w-auto px-16 py-6 bg-neutral-900 text-white font-black rounded-full hover:bg-black transition-all shadow-2xl shadow-neutral-900/20 text-center tracking-widest uppercase text-xs">
-            NEW AUDIT
-          </Link>
-        </div>
+      {/* Footer actions */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <button
+          onClick={handleDownloadPdf}
+          disabled={isGeneratingPdf}
+          className="px-6 py-3 border border-neutral-200 rounded-full text-sm font-medium flex items-center gap-2 hover:bg-neutral-50"
+        >
+          <DownloadIcon className="w-4 h-4" />
+          {isGeneratingPdf ? 'Exporting…' : 'Save PDF'}
+        </button>
+
+        <Link
+          to="/"
+          className="px-8 py-3 bg-neutral-900 text-white rounded-full text-sm font-medium text-center"
+        >
+          New audit
+        </Link>
+      </div>
     </div>
   );
 };
