@@ -1,47 +1,49 @@
-import { useEffect, useState } from "react";
+import React from "react";
 import { supabase } from "../lib/supabase";
+import { useAuth } from "../lib/useAuth";
 
 const Header = () => {
-  const [user, setUser] = useState<any>(null);
-
-  useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      setUser(data.user);
-    });
-
-    const { data: listener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
-      }
-    );
-
-    return () => listener.subscription.unsubscribe();
-  }, []);
+  const { user } = useAuth();
 
   return (
-    <header style={{ padding: 16 }}>
+    <div
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        padding: "12px 24px",
+        borderBottom: "1px solid #ddd",
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "center",
+        background: "#fff",
+        zIndex: 100,
+      }}
+    >
       <strong>PolicyPulse</strong>
 
-      {user ? (
-        <button
-          onClick={() => supabase.auth.signOut()}
-          style={{ marginLeft: 16 }}
-        >
-          Sign Out
-        </button>
-      ) : (
-        <button
-          onClick={() =>
-            supabase.auth.signInWithOtp({
-              email: prompt("Enter email")!,
-            })
-          }
-          style={{ marginLeft: 16 }}
-        >
-          Sign In
-        </button>
-      )}
-    </header>
+      <div>
+        {user ? (
+          <>
+            <span style={{ marginRight: 12 }}>{user.email}</span>
+            <button onClick={() => supabase.auth.signOut()}>
+              Logout
+            </button>
+          </>
+        ) : (
+          <button
+            onClick={() =>
+              supabase.auth.signInWithOtp({
+                email: prompt("Enter email")!,
+              })
+            }
+          >
+            Sign In
+          </button>
+        )}
+      </div>
+    </div>
   );
 };
 
