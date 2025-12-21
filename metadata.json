@@ -1,0 +1,5 @@
+{
+  "name": "PolicyPulse",
+  "description": "An AI-powered analyzer for Terms & Conditions and Privacy Policies. It provides a simple summary, identifies potential risks, and assigns a privacy score to help you understand complex legal documents at a glance.",
+  "requestFramePermissions": []
+}
