@@ -13,6 +13,7 @@ const Footer: React.FC = () => {
           <a href="#" className="hover:text-neutral-900 transition-colors">Legal</a>
           <a href="#" className="hover:text-neutral-900 transition-colors">Privacy</a>
           <a href="#" className="hover:text-neutral-900 transition-colors">Contact</a>
+          <Link to="/privacy">Privacy</Link>
         </div>
       </div>
     </footer>
