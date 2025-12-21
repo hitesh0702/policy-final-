@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, ChangeEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LinkIcon from './icons/LinkIcon';
@@ -56,7 +55,7 @@ const HomePage: React.FC = () => {
         setIsLoading(false);
         return;
       }
-      
+
       navigate('/loading', { state: { sourceValue: displayName } });
       const report = await analysisPromise;
       navigate('/report', { state: { report } });
@@ -69,48 +68,54 @@ const HomePage: React.FC = () => {
     }
   }, [activeTab, url, file, text, navigate]);
 
+  const inputClasses =
+    "w-full p-4 bg-white border border-neutral-200 rounded-2xl focus:ring-0 focus:border-neutral-900 outline-none text-sm shadow-sm";
+
   const renderInput = () => {
-    const inputClasses = "w-full p-6 bg-white border border-neutral-200 rounded-3xl focus:ring-0 focus:border-neutral-900 outline-none transition-all text-neutral-900 placeholder:text-neutral-400 font-medium text-lg shadow-sm";
-    
     switch (activeTab) {
       case SourceType.PDF:
         return (
-          <div className="mt-10">
-            <label htmlFor="file-upload" className="cursor-pointer group block">
-              <div className="flex flex-col items-center justify-center border-2 border-dashed border-neutral-200 rounded-5xl p-20 bg-neutral-50/50 hover:bg-white hover:border-neutral-900 transition-all duration-300">
-                <div className="bg-white p-6 rounded-3xl shadow-md group-hover:scale-105 transition-transform duration-300">
-                  <UploadIcon className="h-10 w-10 text-neutral-900" />
-                </div>
-                <span className="mt-8 text-xl font-black text-neutral-900 tracking-tight">
-                  {fileName ? fileName : 'Upload PDF Document'}
+          <div className="mt-6">
+            <label htmlFor="file-upload" className="cursor-pointer block">
+              <div className="flex flex-col items-center justify-center border border-dashed border-neutral-300 rounded-2xl p-10 bg-neutral-50 hover:bg-white transition">
+                <UploadIcon className="h-8 w-8 text-neutral-700" />
+                <span className="mt-4 text-sm font-semibold text-neutral-900">
+                  {fileName || 'Upload PDF'}
                 </span>
-                <p className="text-sm text-neutral-600 mt-2 font-semibold uppercase tracking-wider">Drag & drop or click to browse</p>
+                <p className="text-xs text-neutral-500 mt-1">
+                  Click to browse
+                </p>
               </div>
-              <input id="file-upload" type="file" className="sr-only" onChange={handleFileChange} accept=".pdf" />
+              <input
+                id="file-upload"
+                type="file"
+                className="sr-only"
+                onChange={handleFileChange}
+                accept=".pdf"
+              />
             </label>
           </div>
         );
       case SourceType.TEXT:
         return (
-          <div className="mt-10">
+          <div className="mt-6">
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
               placeholder="Paste policy text here..."
-              className={`${inputClasses} h-80 resize-none`}
+              className={`${inputClasses} h-40 resize-none`}
               disabled={isLoading}
             />
           </div>
         );
-      case SourceType.URL:
       default:
         return (
-          <div className="mt-10">
+          <div className="mt-6">
             <input
               type="url"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              placeholder="e.g. https://apple.com/privacy"
+              placeholder="https://apple.com/privacy"
               className={inputClasses}
               disabled={isLoading}
             />
@@ -120,60 +125,56 @@ const HomePage: React.FC = () => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto py-12 px-6">
-      <div className="text-center mb-16">
-        <h1 className="text-6xl md:text-8xl font-black text-neutral-900 tracking-tighter leading-[0.95] mb-8">
-          Privacy,<br/><span className="text-neutral-300">decoded.</span>
+    <div className="max-w-xl mx-auto px-5 py-10">
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-black text-neutral-900 tracking-tight leading-tight">
+          Privacy <span className="text-neutral-300">decoded</span>
         </h1>
-        <p className="text-xl text-neutral-600 max-w-lg mx-auto leading-relaxed font-semibold">
-          Understand complex Terms of Service in seconds with our AI engine.
+        <p className="text-sm text-neutral-600 mt-3">
+          Understand complex privacy policies in seconds.
         </p>
       </div>
 
-      <div className="glass-card ambient-shadow p-6 md:p-12 rounded-5xl border border-neutral-100">
+      <div className="bg-white rounded-3xl border border-neutral-200 p-6 shadow-sm">
         <form onSubmit={handleSubmit}>
-          {/* iOS-Style Pure Neutral Toggle */}
-          <div className="bg-neutral-100 p-1.5 rounded-3xl flex">
-            {(
-              [
-                { id: SourceType.URL, label: 'Link', icon: LinkIcon },
-                { id: SourceType.PDF, label: 'File', icon: DocumentIcon },
-                { id: SourceType.TEXT, label: 'Text', icon: TextIcon },
-              ] as const
-            ).map((tab) => (
+          {/* Tabs */}
+          <div className="bg-neutral-100 p-1 rounded-2xl flex mb-6">
+            {[
+              { id: SourceType.URL, label: 'Link', icon: LinkIcon },
+              { id: SourceType.PDF, label: 'File', icon: DocumentIcon },
+              { id: SourceType.TEXT, label: 'Text', icon: TextIcon },
+            ].map((tab) => (
               <button
                 key={tab.id}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                className={`flex-1 py-3 text-[13px] font-black uppercase tracking-widest flex items-center justify-center gap-2 rounded-2xl transition-all duration-300 ${
+                className={`flex-1 py-2 text-xs font-semibold flex items-center justify-center gap-1 rounded-xl transition ${
                   activeTab === tab.id
-                    ? 'bg-white text-neutral-900 shadow-md'
-                    : 'text-neutral-500 hover:text-neutral-900'
+                    ? 'bg-white shadow text-neutral-900'
+                    : 'text-neutral-500'
                 }`}
               >
-                <tab.icon className="w-4 h-4" />
+                <tab.icon className="w-3 h-3" />
                 {tab.label}
               </button>
             ))}
           </div>
-          
+
           {renderInput()}
 
           {error && (
-            <div className="mt-8 p-5 bg-neutral-900 text-white rounded-3xl text-sm font-black text-center uppercase tracking-widest">
+            <div className="mt-4 text-xs text-red-600 text-center">
               {error}
             </div>
           )}
-          
-          <div className="mt-12">
-            <button
-              type="submit"
-              disabled={isLoading || (activeTab === SourceType.URL && !url) || (activeTab === SourceType.PDF && !file) || (activeTab === SourceType.TEXT && !text)}
-              className="w-full py-6 bg-neutral-900 text-white font-black rounded-full hover:bg-black hover:scale-[1.01] transition-all shadow-2xl shadow-neutral-300 active:scale-[0.99] disabled:opacity-30 text-xl tracking-tight"
-            >
-              {isLoading ? 'ANALYZING...' : 'START AUDIT'}
-            </button>
-          </div>
+
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="mt-6 w-full py-4 bg-neutral-900 text-white text-sm font-semibold rounded-full hover:bg-black transition disabled:opacity-40"
+          >
+            {isLoading ? 'Analyzing…' : 'Start Audit'}
+          </button>
         </form>
       </div>
     </div>
