@@ -17,14 +17,13 @@ const App: React.FC = () => {
       }}
     >
       <Header />
-      <main style={{ paddingTop: 80 }}>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/loading" element={<LoadingPage />} />
-          <Route path="/account" element={<AccountPage />} />
-          <Route path="/report" element={<ReportPage />} />
-        </Routes>
-      </main>
+      <main style={{ flexGrow: 1 }}>
+  <Routes>
+    <Route path="/" element={<HomePage />} />
+    <Route path="/loading" element={<LoadingPage />} />
+    <Route path="/report" element={<ReportPage />} />
+  </Routes>
+</main>
     </div>
   );
 };
