@@ -5,6 +5,24 @@ import { useAuth } from "../lib/useAuth";
 const Header = () => {
   const { user } = useAuth();
 
+  const handleSignIn = async () => {
+    const email = prompt("Enter your email");
+    if (!email) return;
+
+    await supabase.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: window.location.origin, // 🔥 CRITICAL FIX
+      },
+    });
+
+    alert("Check your email for the login link");
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <div
       style={{
@@ -12,6 +30,7 @@ const Header = () => {
         borderBottom: "1px solid #ddd",
         display: "flex",
         justifyContent: "space-between",
+        alignItems: "center",
       }}
     >
       <strong>PolicyPulse</strong>
@@ -19,18 +38,10 @@ const Header = () => {
       {user ? (
         <div>
           <span style={{ marginRight: 10 }}>{user.email}</span>
-          <button onClick={() => supabase.auth.signOut()}>Logout</button>
+          <button onClick={handleLogout}>Logout</button>
         </div>
       ) : (
-        <button
-          onClick={() =>
-            supabase.auth.signInWithOtp({
-              email: prompt("Enter email")!,
-            })
-          }
-        >
-          Sign In
-        </button>
+        <button onClick={handleSignIn}>Sign In</button>
       )}
     </div>
   );
