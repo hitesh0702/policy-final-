@@ -167,16 +167,18 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* FOOTER */}
-      <footer
-        style={{
-          marginTop: 90,
-          textAlign: "center",
-          fontSize: 12,
-          opacity: 0.5,
-        }}
-      >
-        © 2025 PolicyPulse · Privacy · Terms · Contact
-      </footer>
+    <footer
+  style={{
+    position: "absolute",
+    bottom: 20,
+    width: "100%",
+    textAlign: "center",
+    fontSize: 12,
+    opacity: 0.5,
+  }}
+>
+  © 2025 PolicyPulse · Privacy · Terms · Contact
+</footer>
     </div>
   );
 };
