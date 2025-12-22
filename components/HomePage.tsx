@@ -20,15 +20,16 @@ const HomePage: React.FC = () => {
 
   return (
     <div
-      style={{
-        minHeight: "100vh",
-        background:
-          "linear-gradient(180deg, #f5f5f7 0%, #e9e9ec 100%)",
-        overflowY: "auto",
-        paddingTop: 120,
-        paddingBottom: 140,
-      }}
-    >
+  style={{
+    height: "100vh",
+    overflow: "hidden",
+    background:
+      "linear-gradient(180deg, #f5f5f7 0%, #e9e9ec 100%)",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+  }}
+>
       {/* CARD */}
       <div
         style={{
