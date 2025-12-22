@@ -3,52 +3,43 @@ import { useAuth } from "../lib/useAuth";
 
 import React, { useState } from "react";
 
-const tabBtn = (active: boolean): React.CSSProperties => ({
-  padding: "10px 18px",
-  borderRadius: 999,
-  border: "none",
-  cursor: "pointer",
-  fontSize: 13,
-  fontWeight: 600,
-  background: active ? "#000" : "transparent",
-  color: active ? "#fff" : "#555",
-});
+const glass: React.CSSProperties = {
+  background: "rgba(255,255,255,0.78)",
+  backdropFilter: "blur(28px)",
+  WebkitBackdropFilter: "blur(28px)",
+  borderRadius: 28,
+  boxShadow: "0 40px 100px rgba(0,0,0,0.15)",
+};
 
 const HomePage: React.FC = () => {
   const [mode, setMode] = useState<"link" | "file" | "text">("link");
-  const [dragOver, setDragOver] = useState(false);
 
   return (
     <div
-  style={{
-    height: "100vh",
-    overflow: "hidden",
-    background:
-      "linear-gradient(180deg, #f5f5f7 0%, #e9e9ec 100%)",
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "center",
-  }}
->
+      style={{
+        minHeight: "100vh",
+        background:
+          "radial-gradient(circle at top, #ffffff 0%, #f1f1f4 60%)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        padding: "100px 16px 40px",
+      }}
+    >
       {/* CARD */}
       <div
         style={{
-          maxWidth: 520,
-          margin: "0 auto",
-          padding: 40,
-          borderRadius: 28,
-          background: "rgba(255,255,255,0.78)",
-          backdropFilter: "blur(30px)",
-          WebkitBackdropFilter: "blur(30px)",
-          boxShadow: "0 40px 100px rgba(0,0,0,0.15)",
-          textAlign: "center",
+          width: "100%",
+          maxWidth: 420,
+          padding: 28,
+          ...glass,
         }}
       >
-        <h1 style={{ fontSize: 26, marginBottom: 6 }}>
+        <h1 style={{ fontSize: 28, marginBottom: 6 }}>
           Privacy <span style={{ opacity: 0.4 }}>decoded</span>
         </h1>
 
-        <p style={{ fontSize: 14, opacity: 0.6, marginBottom: 26 }}>
+        <p style={{ opacity: 0.6, fontSize: 14, marginBottom: 24 }}>
           Understand complex privacy policies in seconds.
         </p>
 
@@ -56,109 +47,108 @@ const HomePage: React.FC = () => {
         <div
           style={{
             display: "flex",
-            gap: 10,
-            justifyContent: "center",
-            marginBottom: 22,
-            background: "#ededf0",
-            padding: 6,
+            background: "rgba(0,0,0,0.06)",
             borderRadius: 999,
+            padding: 4,
+            marginBottom: 18,
           }}
         >
-          <button style={tabBtn(mode === "link")} onClick={() => setMode("link")}>
-            Link
-          </button>
-          <button style={tabBtn(mode === "file")} onClick={() => setMode("file")}>
-            File
-          </button>
-          <button style={tabBtn(mode === "text")} onClick={() => setMode("text")}>
-            Text
-          </button>
+          {["link", "file", "text"].map((t) => (
+            <button
+              key={t}
+              onClick={() => setMode(t as any)}
+              style={{
+                flex: 1,
+                padding: "10px 0",
+                borderRadius: 999,
+                border: "none",
+                background: mode === t ? "#000" : "transparent",
+                color: mode === t ? "#fff" : "#555",
+                fontSize: 13,
+                cursor: "pointer",
+              }}
+            >
+              {t.charAt(0).toUpperCase() + t.slice(1)}
+            </button>
+          ))}
         </div>
 
-        {/* CONTENT */}
+        {/* INPUT AREA */}
         {mode === "link" && (
           <input
             placeholder="https://example.com/privacy"
             style={{
               width: "100%",
               padding: "14px 16px",
-              borderRadius: 12,
+              borderRadius: 14,
               border: "1px solid #ddd",
+              marginBottom: 18,
               fontSize: 14,
-              marginBottom: 20,
-            }}
-          />
-        )}
-
-        {mode === "text" && (
-          <textarea
-            placeholder="Paste privacy policy text here…"
-            rows={6}
-            style={{
-              width: "100%",
-              padding: 14,
-              borderRadius: 12,
-              border: "1px solid #ddd",
-              fontSize: 14,
-              resize: "vertical",
-              marginBottom: 20,
             }}
           />
         )}
 
         {mode === "file" && (
           <div
-            onDragOver={(e) => {
-              e.preventDefault();
-              setDragOver(true);
-            }}
-            onDragLeave={() => setDragOver(false)}
-            onDrop={(e) => {
-              e.preventDefault();
-              setDragOver(false);
-            }}
             style={{
-              border: `2px dashed ${dragOver ? "#000" : "#ccc"}`,
+              border: "1.5px dashed #ccc",
               borderRadius: 16,
-              padding: 30,
-              fontSize: 14,
-              marginBottom: 20,
-              background: dragOver ? "#f1f1f3" : "transparent",
+              padding: 24,
+              textAlign: "center",
+              fontSize: 13,
+              marginBottom: 18,
+              color: "#666",
             }}
           >
-            <strong>Drag & drop</strong> your privacy policy file  
+            Drag & drop privacy policy PDF  
             <br />
-            <span style={{ opacity: 0.6 }}>
-              or click to upload (PDF / DOC / TXT)
-            </span>
-
-            <input
-              type="file"
-              style={{ display: "none" }}
-            />
+            <span style={{ opacity: 0.6 }}>or tap to upload</span>
+            <input type="file" style={{ display: "none" }} />
           </div>
         )}
 
-        {/* ACTION */}
+        {mode === "text" && (
+          <textarea
+            placeholder="Paste privacy policy text here…"
+            style={{
+              width: "100%",
+              minHeight: 120,
+              padding: 14,
+              borderRadius: 14,
+              border: "1px solid #ddd",
+              marginBottom: 18,
+              fontSize: 14,
+              resize: "none",
+            }}
+          />
+        )}
+
+        {/* BUTTON */}
         <button
           style={{
             width: "100%",
-            padding: "15px 0",
+            padding: "16px 0",
             borderRadius: 999,
             background: "#000",
             color: "#fff",
-            fontSize: 15,
-            fontWeight: 600,
             border: "none",
+            fontSize: 15,
             cursor: "pointer",
           }}
         >
           Start Audit
         </button>
 
-        {/* PLAN */}
-        <div style={{ marginTop: 18, fontSize: 12, opacity: 0.6 }}>
-          Free plan · Limited scans
+        {/* FOOTNOTE */}
+        <div
+          style={{
+            marginTop: 16,
+            textAlign: "center",
+            fontSize: 12,
+            opacity: 0.6,
+          }}
+        >
+          Free plan · Limited scans  
           <br />
           <span style={{ textDecoration: "underline", cursor: "pointer" }}>
             Upgrade to Pro
@@ -167,18 +157,16 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* FOOTER */}
-    <footer
-  style={{
-    position: "absolute",
-    bottom: 20,
-    width: "100%",
-    textAlign: "center",
-    fontSize: 12,
-    opacity: 0.5,
-  }}
->
-  © 2025 PolicyPulse · Privacy · Terms · Contact
-</footer>
+      <footer
+        style={{
+          marginTop: 40,
+          fontSize: 12,
+          opacity: 0.5,
+          textAlign: "center",
+        }}
+      >
+        © 2025 PolicyPulse · Privacy · Terms · Contact
+      </footer>
     </div>
   );
 };
