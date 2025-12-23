@@ -2,91 +2,137 @@ import React, { useState, useRef } from "react";
 
 const HomePage = () => {
   const [mode, setMode] = useState<"link" | "file" | "text">("link");
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileClick = () => fileInputRef.current?.click();
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files?.[0]) setFileName(e.target.files[0].name);
+  const openFilePicker = () => fileInputRef.current?.click();
+
+  const handleFileSelect = (f: File) => {
+    if (f.size > 10 * 1024 * 1024) {
+      alert("Max file size is 10MB");
+      return;
+    }
+    setFile(f);
   };
 
   return (
-    <div style={{
-      minHeight: "100svh",
-      background: "radial-gradient(circle at top, #ffffff 0%, #f4f4f9 100%)",
-      display: "flex",
-      flexDirection: "column",
-      fontFamily: '-apple-system, system-ui, sans-serif',
-      color: "#1d1d1f"
-    }}>
-      
-      {/* CLEAN HEADER - No more overlapping! */}
-      <nav style={{
-        padding: "16px",
+    <div
+      style={{
+        height: "100svh",
+        overflow: "hidden",
+        background:
+          "radial-gradient(circle at top, #ffffff 0%, #f4f4f9 100%)",
         display: "flex",
-        justifyContent: "center",
-        alignItems: "center"
-      }}>
-        <div style={{
-          width: "100%",
-          maxWidth: "400px",
-          background: "rgba(255,255,255,0.8)",
-          backdropFilter: "blur(20px)",
-          padding: "12px 20px",
-          borderRadius: "999px",
+        flexDirection: "column",
+        fontFamily: "-apple-system, system-ui, sans-serif",
+        color: "#1d1d1f",
+      }}
+      onDragOver={(e) => e.preventDefault()} // iOS FIX
+    >
+      {/* HEADER */}
+      <nav
+        style={{
+          padding: 16,
           display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          border: "1px solid rgba(0,0,0,0.05)",
-          boxShadow: "0 4px 12px rgba(0,0,0,0.03)"
-        }}>
-          <strong style={{ fontSize: "15px" }}>PolicyPulse</strong>
-          <span style={{ fontSize: "14px", color: "#007AFF", fontWeight: 600, cursor: "pointer" }}>Sign In</span>
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 420,
+            background: "rgba(255,255,255,0.85)",
+            backdropFilter: "blur(20px)",
+            borderRadius: 999,
+            padding: "12px 20px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            border: "1px solid rgba(0,0,0,0.05)",
+          }}
+        >
+          <strong>PolicyPulse</strong>
+          <button
+            style={{
+              border: "none",
+              background: "transparent",
+              color: "#007AFF",
+              fontWeight: 600,
+              fontSize: 14,
+              cursor: "pointer",
+            }}
+          >
+            Sign In
+          </button>
         </div>
       </nav>
 
-      {/* MAIN CARD SECTION */}
-      <main style={{
-        flex: 1,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "20px 16px"
-      }}>
-        <div style={{
-          width: "100%",
-          maxWidth: "420px",
-          background: "white",
-          borderRadius: "32px",
-          padding: "32px 24px",
-          boxShadow: "0 20px 60px rgba(0,0,0,0.05)",
-          border: "1px solid rgba(0,0,0,0.03)",
-          boxSizing: "border-box"
-        }}>
-          <h1 style={{ fontSize: "32px", fontWeight: 800, marginBottom: "8px", letterSpacing: "-1px" }}>
-            Privacy <span style={{ color: "#86868b", fontWeight: 400 }}>decoded</span>
+      {/* MAIN */}
+      <main
+        style={{
+          flex: 1,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          padding: "0 16px",
+        }}
+      >
+        <div
+          style={{
+            width: "100%",
+            maxWidth: 420,
+            background: "white",
+            borderRadius: 32,
+            padding: 28,
+            boxShadow: "0 20px 60px rgba(0,0,0,0.06)",
+            border: "1px solid rgba(0,0,0,0.04)",
+          }}
+        >
+          <h1
+            style={{
+              fontSize: 30,
+              fontWeight: 800,
+              marginBottom: 8,
+              letterSpacing: -1,
+            }}
+          >
+            Privacy{" "}
+            <span style={{ color: "#86868b", fontWeight: 400 }}>
+              decoded
+            </span>
           </h1>
-          <p style={{ fontSize: "16px", color: "#424245", marginBottom: "32px" }}>
+
+          <p style={{ color: "#424245", marginBottom: 24 }}>
             Understand complex privacy policies in seconds.
           </p>
 
-          {/* TABS */}
-          <div style={{ display: "flex", background: "#f2f2f7", borderRadius: "14px", padding: "4px", marginBottom: "24px" }}>
+          {/* MODE SWITCH */}
+          <div
+            style={{
+              display: "flex",
+              background: "#f2f2f7",
+              borderRadius: 14,
+              padding: 4,
+              marginBottom: 20,
+            }}
+          >
             {["link", "file", "text"].map((t) => (
               <button
                 key={t}
                 onClick={() => setMode(t as any)}
                 style={{
                   flex: 1,
-                  height: "38px",
-                  borderRadius: "10px",
+                  height: 38,
+                  borderRadius: 10,
                   border: "none",
                   background: mode === t ? "white" : "transparent",
-                  color: mode === t ? "black" : "#86868b",
-                  fontSize: "14px",
-                  fontWeight: mode === t ? "600" : "500",
-                  boxShadow: mode === t ? "0 2px 8px rgba(0,0,0,0.1)" : "none",
-                  cursor: "pointer"
+                  fontWeight: 600,
+                  fontSize: 14,
+                  boxShadow:
+                    mode === t
+                      ? "0 2px 8px rgba(0,0,0,0.12)"
+                      : "none",
+                  cursor: "pointer",
                 }}
               >
                 {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -94,81 +140,122 @@ const HomePage = () => {
             ))}
           </div>
 
-          {/* INPUTS */}
-          <div style={{ minHeight: "140px" }}>
+          {/* INPUT AREA */}
+          <div style={{ minHeight: 140 }}>
             {mode === "link" && (
               <input
-                type="url"
-                placeholder="Paste policy URL..."
+                placeholder="https://example.com/privacy"
                 style={{
                   width: "100%",
-                  height: "54px",
+                  height: 54,
                   padding: "0 16px",
-                  borderRadius: "14px",
+                  borderRadius: 14,
                   border: "1px solid #d2d2d7",
-                  fontSize: "16px",
-                  outline: "none",
-                  boxSizing: "border-box"
+                  fontSize: 16,
+                }}
+              />
+            )}
+
+            {mode === "text" && (
+              <textarea
+                placeholder="Paste policy text…"
+                style={{
+                  width: "100%",
+                  height: 140,
+                  padding: 16,
+                  borderRadius: 14,
+                  border: "1px solid #d2d2d7",
+                  resize: "none",
+                  fontSize: 16,
                 }}
               />
             )}
 
             {mode === "file" && (
-              <div
-                onClick={handleFileClick}
-                style={{
-                  border: "2px dashed #d2d2d7",
-                  borderRadius: "14px",
-                  padding: "40px 20px",
-                  textAlign: "center",
-                  background: "#fafafa",
-                  cursor: "pointer"
-                }}
-              >
-                <input type="file" ref={fileInputRef} onChange={handleFileChange} style={{ display: 'none' }} accept=".pdf,.txt" />
-                <div style={{ fontSize: "15px", fontWeight: 600 }}>{fileName || "Tap to upload file"}</div>
-                <div style={{ fontSize: "13px", color: "#86868b", marginTop: "4px" }}>PDF or Text (Max 10MB)</div>
-              </div>
-            )}
+              <>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept=".pdf,.txt"
+                  style={{ display: "none" }}
+                  onChange={(e) =>
+                    e.target.files &&
+                    handleFileSelect(e.target.files[0])
+                  }
+                />
 
-            {mode === "text" && (
-              <textarea
-                placeholder="Paste text here..."
-                style={{
-                  width: "100%",
-                  height: "140px",
-                  padding: "16px",
-                  borderRadius: "14px",
-                  border: "1px solid #d2d2d7",
-                  fontSize: "16px",
-                  resize: "none",
-                  outline: "none",
-                  boxSizing: "border-box",
-                  fontFamily: "inherit"
-                }}
-              />
+                <div
+                  onClick={openFilePicker}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.dataTransfer.files &&
+                      handleFileSelect(e.dataTransfer.files[0]);
+                  }}
+                  style={{
+                    border: "2px dashed #d2d2d7",
+                    borderRadius: 14,
+                    padding: 32,
+                    textAlign: "center",
+                    cursor: "pointer",
+                    background: "#fafafa",
+                  }}
+                >
+                  {file ? (
+                    <>
+                      <strong>{file.name}</strong>
+                      <div style={{ fontSize: 12, color: "#86868b" }}>
+                        {(file.size / 1024 / 1024).toFixed(2)} MB
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      Drag & drop PDF
+                      <br />
+                      <span style={{ color: "#86868b" }}>
+                        or tap to upload
+                      </span>
+                    </>
+                  )}
+                </div>
+              </>
             )}
           </div>
 
-          <button style={{
-            width: "100%",
-            height: "56px",
-            borderRadius: "16px",
-            background: "black",
-            color: "white",
-            border: "none",
-            fontSize: "17px",
-            fontWeight: "600",
-            marginTop: "24px",
-            cursor: "pointer"
-          }}>
+          {/* CTA */}
+          <button
+            disabled={mode === "file" && !file}
+            style={{
+              width: "100%",
+              height: 56,
+              borderRadius: 16,
+              background:
+                mode === "file" && !file ? "#999" : "#000",
+              color: "white",
+              border: "none",
+              fontSize: 17,
+              fontWeight: 600,
+              marginTop: 24,
+              cursor:
+                mode === "file" && !file
+                  ? "not-allowed"
+                  : "pointer",
+            }}
+          >
             Start Audit
           </button>
         </div>
       </main>
 
-      <footer style={{ padding: "20px", textAlign: "center", fontSize: "12px", color: "#86868b" }}>
-        © 2025 PolicyPulse · Built for clarity
+      {/* FOOTER */}
+      <footer
+        style={{
+          textAlign: "center",
+          fontSize: 12,
+          color: "#86868b",
+          paddingBottom: 16,
+        }}
+      >
+        © 2025 PolicyPulse · Privacy · Terms · Contact
       </footer>
     </div>
   );
