@@ -1,6 +1,3 @@
-
-import { useAuth } from "../lib/useAuth";
-
 import React, { useState } from "react";
 
 const glass = {
@@ -8,7 +5,8 @@ const glass = {
   backdropFilter: "blur(30px)",
   WebkitBackdropFilter: "blur(30px)",
   borderRadius: 28,
-  boxShadow: "0 30px 80px rgba(0,0,0,0.18)",
+  // Reduced shadow for mobile so it doesn't look "dirty" on small screens
+  boxShadow: "0 15px 40px rgba(0,0,0,0.12)",
 };
 
 const HomePage = () => {
@@ -17,22 +15,21 @@ const HomePage = () => {
   return (
     <div
       style={{
-        height: "100svh", // IMPORTANT (fixes iOS scroll)
-        background:
-          "radial-gradient(circle at top, #ffffff 0%, #f2f2f6 65%)",
-        overflow: "hidden",
+        // Changed to minHeight so it can grow if the keyboard pops up
+        minHeight: "100svh", 
+        background: "radial-gradient(circle at top, #ffffff 0%, #f2f2f6 65%)",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
       }}
     >
       {/* HEADER */}
       <div
         style={{
-          position: "fixed",
-          top: "env(safe-area-inset-top)",
-          left: 0,
-          right: 0,
+          paddingTop: "calc(12px + env(safe-area-inset-top))",
           display: "flex",
           justifyContent: "center",
-          paddingTop: 12,
+          width: "100%",
           zIndex: 10,
         }}
       >
@@ -45,29 +42,36 @@ const HomePage = () => {
             display: "flex",
             gap: 12,
             fontSize: 14,
+            border: "1px solid rgba(0,0,0,0.05)"
           }}
         >
           <strong>PolicyPulse</strong>
-          <span style={{ opacity: 0.5 }}>Sign In</span>
+          <span style={{ opacity: 0.5, cursor: "pointer" }}>Sign In</span>
         </div>
       </div>
 
-      {/* CENTER */}
+      {/* CENTER CARD */}
       <div
         style={{
-          height: "100%",
+          flex: 1,
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: "0 16px",
+          padding: "20px 16px", // Space for mobile edges
         }}
       >
-        <div style={{ width: "100%", maxWidth: 380, padding: 24, ...glass }}>
-          <h1 style={{ fontSize: 26, marginBottom: 6 }}>
-            Privacy <span style={{ opacity: 0.4 }}>decoded</span>
+        <div style={{ 
+          width: "100%", 
+          maxWidth: 400, 
+          padding: "32px 24px", 
+          boxSizing: "border-box",
+          ...glass 
+        }}>
+          <h1 style={{ fontSize: 28, marginBottom: 8, letterSpacing: "-0.5px" }}>
+            Privacy <span style={{ opacity: 0.3 }}>decoded</span>
           </h1>
 
-          <p style={{ fontSize: 14, opacity: 0.6, marginBottom: 20 }}>
+          <p style={{ fontSize: 15, opacity: 0.6, marginBottom: 24, lineHeight: "1.4" }}>
             Understand complex privacy policies in seconds.
           </p>
 
@@ -75,10 +79,10 @@ const HomePage = () => {
           <div
             style={{
               display: "flex",
-              background: "rgba(0,0,0,0.06)",
-              borderRadius: 999,
+              background: "rgba(0,0,0,0.05)",
+              borderRadius: 14,
               padding: 4,
-              marginBottom: 16,
+              marginBottom: 20,
             }}
           >
             {["link", "file", "text"].map((t) => (
@@ -87,12 +91,15 @@ const HomePage = () => {
                 onClick={() => setMode(t as any)}
                 style={{
                   flex: 1,
-                  height: 36,
-                  borderRadius: 999,
+                  height: 38,
+                  borderRadius: 10,
                   border: "none",
                   background: mode === t ? "#000" : "transparent",
                   color: mode === t ? "#fff" : "#666",
                   fontSize: 13,
+                  fontWeight: 500,
+                  transition: "all 0.2s ease",
+                  cursor: "pointer"
                 }}
               >
                 {t.charAt(0).toUpperCase() + t.slice(1)}
@@ -100,63 +107,67 @@ const HomePage = () => {
             ))}
           </div>
 
-          {/* INPUT */}
-          {mode === "link" && (
-            <input
-              placeholder="https://example.com/privacy"
-              style={{
-                width: "100%",
-                height: 44,
-                padding: "0 14px",
-                borderRadius: 14,
-                border: "1px solid #ddd",
-                marginBottom: 16,
-              }}
-            />
-          )}
+          {/* INPUT AREA */}
+          <div style={{ minHeight: 120 }}>
+            {mode === "link" && (
+              <input
+                placeholder="https://example.com/privacy"
+                style={{
+                  width: "100%",
+                  height: 48,
+                  padding: "0 16px",
+                  borderRadius: 12,
+                  border: "1px solid #e1e1e1",
+                  fontSize: 16, // Prevents iOS zoom on focus
+                  boxSizing: "border-box"
+                }}
+              />
+            )}
 
-          {mode === "file" && (
-            <div
-              style={{
-                border: "1.5px dashed #ccc",
-                borderRadius: 16,
-                padding: 22,
-                textAlign: "center",
-                fontSize: 13,
-                marginBottom: 16,
-                color: "#666",
-              }}
-            >
-              Drag & drop PDF
-              <br />
-              <span style={{ opacity: 0.6 }}>or tap to upload</span>
-            </div>
-          )}
+            {mode === "file" && (
+              <div
+                style={{
+                  border: "2px dashed #e1e1e1",
+                  borderRadius: 12,
+                  padding: "24px 10px",
+                  textAlign: "center",
+                  fontSize: 14,
+                  color: "#888",
+                }}
+              >
+                Tap to upload PDF
+              </div>
+            )}
 
-          {mode === "text" && (
-            <textarea
-              placeholder="Paste privacy policy text…"
-              style={{
-                width: "100%",
-                height: 100,
-                padding: 14,
-                borderRadius: 14,
-                border: "1px solid #ddd",
-                marginBottom: 16,
-                resize: "none",
-              }}
-            />
-          )}
+            {mode === "text" && (
+              <textarea
+                placeholder="Paste privacy policy text…"
+                style={{
+                  width: "100%",
+                  height: 120,
+                  padding: 16,
+                  borderRadius: 12,
+                  border: "1px solid #e1e1e1",
+                  fontSize: 16,
+                  resize: "none",
+                  boxSizing: "border-box"
+                }}
+              />
+            )}
+          </div>
 
           <button
             style={{
               width: "100%",
-              height: 48,
-              borderRadius: 999,
+              height: 52,
+              borderRadius: 12,
               background: "#000",
               color: "#fff",
               border: "none",
-              fontSize: 15,
+              fontSize: 16,
+              fontWeight: 600,
+              marginTop: 16,
+              cursor: "pointer"
             }}
           >
             Start Audit
@@ -164,15 +175,15 @@ const HomePage = () => {
 
           <div
             style={{
-              marginTop: 14,
+              marginTop: 18,
               textAlign: "center",
-              fontSize: 12,
-              opacity: 0.6,
+              fontSize: 13,
+              opacity: 0.5,
             }}
           >
             Free plan · Limited scans
             <br />
-            <span style={{ textDecoration: "underline" }}>
+            <span style={{ textDecoration: "underline", cursor: "pointer" }}>
               Upgrade to Pro
             </span>
           </div>
@@ -182,16 +193,14 @@ const HomePage = () => {
       {/* FOOTER */}
       <div
         style={{
-          position: "fixed",
-          bottom: "env(safe-area-inset-bottom)",
+          paddingBottom: "calc(15px + env(safe-area-inset-bottom))",
           width: "100%",
           textAlign: "center",
-          fontSize: 11,
-          opacity: 0.5,
-          paddingBottom: 10,
+          fontSize: 12,
+          opacity: 0.4,
         }}
       >
-        © 2025 PolicyPulse · Privacy · Terms · Contact
+        © 2025 PolicyPulse
       </div>
     </div>
   );
