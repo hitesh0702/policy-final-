@@ -13,24 +13,20 @@ const App: React.FC = () => {
         minHeight: "100svh",
         display: "flex",
         flexDirection: "column",
-        fontFamily: "-apple-system, BlinkMacSystemFont, system-ui, sans-serif",
         background: "#f5f5f7",
-        color: "#111",
-        overflow: "hidden", // 🔥 PREVENT PAGE SCROLL
+        fontFamily: "-apple-system, system-ui, sans-serif",
+        overflow: "hidden",
       }}
     >
-      {/* Header takes real space (NOT fixed) */}
       <Header />
 
-      {/* Main content area */}
       <main
         style={{
           flex: 1,
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
-          padding: "24px 16px",
-          overflow: "hidden", // 🔥 PREVENT DOUBLE SCROLL
+          padding: "24px",
         }}
       >
         <Routes>
