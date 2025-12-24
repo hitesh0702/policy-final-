@@ -4,6 +4,7 @@ import Header from "./components/Header";
 import HomePage from "./components/HomePage";
 import LoadingPage from "./components/LoadingPage";
 import ReportPage from "./components/ReportPage";
+import AuthPage from "./pages/AuthPage";
 import AccountPage from "./components/AccountPage";
 
 const App: React.FC = () => {
@@ -33,6 +34,7 @@ const App: React.FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/loading" element={<LoadingPage />} />
           <Route path="/report" element={<ReportPage />} />
+            <Route path="/auth" element={<AuthPage />} />
           <Route path="/account" element={<AccountPage />} />
         </Routes>
       </main>

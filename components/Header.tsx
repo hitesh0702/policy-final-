@@ -1,9 +1,14 @@
 import React from "react";
+import { useNavigate, useLocation } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { useAuth } from "../lib/useAuth";
 
 const Header = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const isAuthPage = location.pathname === "/auth";
 
   return (
     <header
@@ -12,6 +17,7 @@ const Header = () => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        pointerEvents: isAuthPage ? "none" : "auto",
       }}
     >
       <div
@@ -25,9 +31,15 @@ const Header = () => {
           alignItems: "center",
           boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
           border: "1px solid rgba(0,0,0,0.06)",
+          opacity: isAuthPage ? 0.6 : 1,
         }}
       >
-        <strong>PolicyPulse</strong>
+        <strong
+          style={{ cursor: "pointer" }}
+          onClick={() => navigate("/")}
+        >
+          PolicyPulse
+        </strong>
 
         {user ? (
           <>
@@ -35,33 +47,36 @@ const Header = () => {
               {user.email}
             </span>
             <button
-              onClick={() => supabase.auth.signOut()}
+              onClick={async () => {
+                await supabase.auth.signOut();
+                navigate("/");
+              }}
               style={{
                 border: "none",
                 background: "transparent",
                 color: "#007AFF",
                 cursor: "pointer",
+                fontWeight: 500,
               }}
             >
               Logout
             </button>
           </>
         ) : (
-          <button
-            onClick={() =>
-              supabase.auth.signInWithOtp({
-                email: prompt("Enter email")!,
-              })
-            }
-            style={{
-              border: "none",
-              background: "transparent",
-              color: "#007AFF",
-              cursor: "pointer",
-            }}
-          >
-            Sign In
-          </button>
+          !isAuthPage && (
+            <button
+              onClick={() => navigate("/auth")}
+              style={{
+                border: "none",
+                background: "transparent",
+                color: "#007AFF",
+                cursor: "pointer",
+                fontWeight: 500,
+              }}
+            >
+              Sign In
+            </button>
+          )
         )}
       </div>
     </header>
